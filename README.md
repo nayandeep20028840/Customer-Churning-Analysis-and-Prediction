@@ -5,7 +5,7 @@
 • In this study, we aim to classify potential churn customers based on numerical and categorical features using machine learning algorithms.<br/>
 • We explore the use of K-means clustering for customer segmentation and logistic regression for churn prediction.We also perform data preprocessing techniques such as normalization, standardization, and data balancing to improve the performance of our models. We discuss our results and provide recommendations for companies to improve their customer retention strategies.<br/>
 
-# Exploratory Data Analysis
+# EXPLORATORY DATA ANALYSIS
 
 ## A. Dataset
 The dataset used for this study is from IBM, published 5 years ago on Kaggle. The data attributes are as follows –
@@ -98,19 +98,91 @@ Inferences obtained –<br/>
 ![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/b5b7ceac-e305-4c0c-99aa-1140e7b7a03f)
 There are no outliers in the data.<br/>
 
+## H. Summary of EDA (exploratory data analysis)
+exploratory data analysis (EDA) is an approach of analyzing data sets to summarize their main characteristics, often using statistical graphics and other data visualization methods.<br/>
+
+### Order / Values of features for customer churn cases:
+
+#### 1. Categorical Features (Order):
+• gender : Male = Female<br/>
+• SeniorCitizen : No SeniorCitizen > SeniorCitizen<br/>
+• Partner : No Partner > Partner<br/>
+• Dependents : No Dependent > Dependent<br/>
+• PhoneService : PhoneService > No PhoneService<br/>
+• MultipleLines : MultipleLines > No MultipleLines > No PhoneService<br/>
+• InternetService : Fiber Optic > DSL > No InternetService<br/>
+• OnlineSecurity : Absent > Present > No InternetService<br/>
+• OnlineBackup : Absent > Present > No InternetService<br/>
+• DeviceProtection : Absent > Present > No InternetService<br/>
+• TechSupport : Absent > Present > No InternetService<br/>
+• StreamingTV : Absent > Present > No InternetService<br/>
+• StreamingMovies : Absent > Present > No InternetService<br/>
+• Contract : Month-to-Month > One year > Two year<br/>
+• PaperlessBilling : Present > Absent<br/>
+• PaymentMethod : Electronic check > Mailed check > Bank Transfer (automatic) > Credit Card (automatic)<br/>
+
+#### 2. Numerical Features (Range):
+• tenure : 1 - 5 months<br/>
+• MonthlyCharges : 65 - 105<br/>
+• TotalCharges : 0 – 1000<br/>
+
+# FEATURE ENGINEERING
+
+## A. Data Transformation and Scaling
+Since the numerical features are not distributed normally, we tried using many techniques to make them normal but only box-cox transformation has shown promising results only for TotalCharges. So, TotalCharges is transformed using the same and StandardScaler is used for standardizing the numerical features. <br/>
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/7ab595e5-e606-46df-a133-3448485f0149)
+
+## B. Correlation Matrix
+There’s no collinearity between the features observed. MultipleLines, PhoneService, gender, StreamingTV, StreamingMovies, and InternetService do not display any kind of correlation. Dropping the features with a correlation coefficient between (-0.1,0.1). Rest displays a significant positive or negative correlation.<br/>
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/48a40878-2f73-4eef-8e6d-d90034f8c5d6)
+
+# MODELING & ANALYSIS OF RESULTS
+
+## A. Linear Regression
+• Linear regression assumes a linear relationship between the independent variables and the dependent variable, and the residual errors should be normally distributed with constant variance.<br/>
+• However, in the given dataset, there are categorical variables, and the relationship between the independent variables and the dependent variable is not necessarily linear. Therefore, linear regression is not suitable for modeling this data.<br/>
+
+## B. Logistic Regression
+• Logistic regression can be used to predict the probability of churn for customers based on various features such as their tenure, monthly charges, and among others. Logistic regression is a binary classification algorithm that is used to model the relationship between a set of features and a binary target variable, in this case, whether a customer will churn or not.<br/>
+• The logistic regression model will estimate the probability of churn based on the input features and output a binary value of 1 (churn) or 0 (not churn) for each customer. By setting a probability threshold, businesses can use the logistic regression model to identify the customers who are at high risk of churning and take proactive measures to retain them.Since the dataset is imbalanced in a 3:1 ratio for Not-Churn:Churn customers, the model may tend to predict the majority class more often and ignore the minority class. Class weights assign a higher weight to the minority class and a lower weight to the majority class, allowing the model to give more importance to the minority class during training. This can lead to a better performance of the model in predicting the minority class.<br/>
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/208b947d-f26d-402c-b39c-c14653d3c5e1)
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/e5d06f6e-7b3f-4ec4-a7b4-45b6d19066e5)
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/a22d7c67-e02e-4bce-9c25-4a254f79b671)
+• Our Logistic Regression model has an accuracy of 0.74, a precision of 0.5 for the positive class, a recall of 0.78 for the positive class, and an F1-score of 0.61 for the positive class. These metrics indicate that the model is able to identify a high percentage of the churned customers, but it also misclassifies a significant number of non-churned customers as churned.However, the area under the ROC curve is 0.83, which indicates that the model performs well in terms of distinguishing between the positive and negative classes.<br/>
+
+## C. K-Means Clustering
+• K-means clustering is an unsupervised machine learning algorithm used to group similar data points together in a dataset. It tries to identify natural groupings in the data by minimizing the sum of squared distances between data points and their assigned cluster centroid. The algorithm works by randomly initializing k centroids, assigning data points to the nearest centroid, computing the new centroids based on the mean of the assigned data points, and repeating the process until convergence. The optimal number of clusters is typically determined through trial and error or using a statistical method.<br/>
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/0626a2cd-cbca-4315-9996-339999a103b9)
+• From the graph, 4 is the optimal number of clusters for our data. After fitting the data for our 4 clusters, we obtained a similar number of data points in each cluster. Also, we can observe that 0 and 2 had a higher churn rate compared to Clusters 1 and 3.<br/>
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/8acf9feb-68f7-4e25-a362-a34ee587e5c0)
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/e5fc9f0a-55df-4d99-9c75-dd0552824b1a)
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/b553b991-c777-4939-8c06-a89a86825ef9)
+![image](https://github.com/nayandeep20028840/Customer-Churning-Analysis-and-Prediction/assets/97220336/b2c9733b-71e4-43e8-84ac-ecc66fa0f12d)
+
+We found out that customers in 0&2 are typically –<br/>
+• Having shorter tenure than in other clusters<br/>
+• In the Month-to-Month contract<br/>
+• More Likely to be not elderly<br/>
+• Uses Fiber Optic (cluster 2 customers also use DSL)<br/>
+• Doesn’t have Online Security<br/>
+
+Cluster analysis is helpful for placing customers into segments using data, which allows businesses to decide which segment(s) to target from distinct marketing mixes that will satisfy the needs and wants of each targeted Cluster. If we have a new customer we can easily determine which cluster he falls in and this can be used to customize plans for the customers. We can also use the clustering algorithm to cluster the data at different time intervals, and then compare the clusters to see if any customers have moved from one cluster to another.<br/>
 
 
+# MEASURES FOR REDUCING CUSTOMER CHURN & INCREASE REVENUE
 
+• 3 types of customers should be targeted : SeniorCitizen, Living with a Partner, living all alone.<br/>
+• The number of SeniorCitizen customers is low but their lower-limit of MonthlyCharges is higher than the other customers. Thus, SeniorCitizen customers are ready to pay more money but they need to be catered with that level of service.<br/>
+• In order to create a strong foundation of customers, Telco Company needs to create an easy and affordable entry point for their services. For the tenure of 1st 6 months, it needs to focus extensively on OnlineSecurity,OnlineBackup,DeviceProtection & TechSupport as this period is the most critical and uncertain for the customers.<br/>
+• Once they build a solid support services for customers, they need to push the usage of MultipleLines & Fiber Optic cables for the PhoneService & InternetService respectively. Try to decrease the entry point at least after which prices can be increased.<br/>
+• StreamingTV and StreamingMovies need to be made affordable. The content of these services should be targeting all types of customers. This needs to be followed up with an easy and hassle-freePaymentMethod.<br/>
+• Put an end to the Electronic check for payment purposes due to it's high churn and focus entirely on Bank Transfer (automatic) & Credit Card (automatic)<br/>
+• Once the MonthlyCharges for any single service hits the 70 mark, customers become very conscious about their MonthlyCharges. Make it low by providing offers for a certain period of time.<br/>
 
-
-
-
-
-
-
-
-
-
+# CONCLUSION
+• This is a great dataset that gives an opportunity to peak into the real-world business problem and can be dealt with the Data Science techniques.<br/>
+• Insights gained from the Data Analysis are very valuable for understanding the effectiveness of the existing systems that are in place. They also assist in drawing up plans & measures to counter the problems or be in an infinite loop for improvement.<br/>
+• We have successfully developed multiple models which help us in predicting the probability of customer churning (which helps telecom in acting) and by determining which cluster our customer falls in the 4 clusters formed which helps in the type of action plan required to prevent churning.<br/>
 
 
 
